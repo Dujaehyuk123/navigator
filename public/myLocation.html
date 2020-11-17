@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>simpleMap</title>
+<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+<script
+	src="https://apis.openapi.sk.com/tmap/jsv2?version=1&appKey=l7xx0ce34cc9d1cd4d7aa817782ad053375c"></script>
+<script type="text/javascript">
+	var map;
+	var marker_s, marker_e, marker_p1, marker_p2;
+	var totalMarkerArr = [];
+	var drawInfoArr = [];
+	var resultdrawArr = [];
+
+	function initTmap() {
+		// 1. 지도 띄우기
+		map = new Tmapv2.Map("map_div", {
+			center : new Tmapv2.LatLng(37.570028, 126.989072),
+			width : "100%",
+			height : "400px",
+			zoom : 15,
+			zoomControl : true,
+			scrollwheel : true
+		});
+
+		// 마커 초기화
+        marker1 = new Tmapv2.Marker(
+            {
+               icon : "http://tmapapis.sktelecom.com/upload/tmap/marker/pin_b_m_a.png",
+               iconSize : new Tmapv2.Size(24, 38),
+               map : map
+            });
+
+      $("#btn_select")
+            .click(
+                  function() {
+                     // 2. API 사용요청
+                     var city_do = $("#city_do").val();
+                     var gu_gun = $("#gu_gun").val();
+                     var dong = $("#dong").val();
+                     var bunji = $('#bunji').val();
+
+                     
+
+                     $
+                           .ajax({
+                              method : "GET",
+                              url : "https://apis.openapi.sk.com/tmap/geo/geocoding?version=1&format=json&callback=result",
+                              async : false,
+                              data : {
+                                 "appKey" : "l7xx0ce34cc9d1cd4d7aa817782ad053375c",
+                                 "coordType" : "WGS84GEO",
+                                 "city_do" : city_do,
+                                 "gu_gun" : gu_gun,
+                                 "dong" : dong,
+                                 "bunji" : bunji
+                              },
+                              success : function(response) {
+                                 var resultData = response.coordinateInfo;
+                                 var lon, lat;
+
+                                 if (resultData.lon.length > 0) {
+                                    lon = resultData.lon;
+                                    lat = resultData.lat;
+                                 } else {
+                                    lon = resultData.newLon;
+                                    lat = resultData.newLat;
+                                 }
+
+                                 //기존 마커 삭제
+                                 marker1.setMap(null);
+
+                                 var markerPosition = new Tmapv2.LatLng(
+                                       Number(lat), Number(lon));
+                                 //마커 올리기
+                                 marker1 = new Tmapv2.Marker(
+                                       {
+                                          position : markerPosition,
+                                          icon : "http://tmapapis.sktelecom.com/upload/tmap/marker/pin_b_m_a.png",
+                                          iconSize : new Tmapv2.Size(
+                                                24, 38),
+                                          map : map
+                                       });
+                                 map.setCenter(markerPosition);
+
+                              },
+                              error : function(request, status, error) {
+                                 console.log("code:"
+                                       + request.status + "\n"
+                                       + "message:"
+                                       + request.responseText
+                                       + "\n" + "error:" + error);
+                              }
+                           });
+
+                  });
+   }
+//2.api 사용요청
+   var lon, lat;
+	map.addListener("click", function onClick(evt){
+		var mapLatLng = evt.latLng;
+		
+	 	coordConvert(mapLatLng._lng, mapLatLng._lat);
+	});
+
+   function coordConvert(lon, lat){
+		var selectLevel = $("#selectLevel").val();
+		$.ajax({
+			method:"GET",
+			url:"https://apis.openapi.sk.com/tmap/geo/coordconvert?version=1&format=json&callback=result",
+			async:false,
+			data:{
+				
+				"appKey" : "l7xx0ce34cc9d1cd4d7aa817782ad053375c",
+				"lon" : lon,
+				"lat" : lat,
+				"toCoord" : selectLevel
+			},
+			success:function(response){
+				var resultCoordinate = response.coordinate;
+				
+				var lon2 = resultCoordinate.lon;
+				var lat2 = resultCoordinate.lat;
+				
+			    var result = lon+","+lat+"->"+lon2+","+lat2; 
+				var resultDiv = document.getElementById("result");
+				resultDiv.innerHTML = result;
+			},
+			error:function(request,status,error){
+				console.log("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
+			}
+		});
+		
+    }
+    
+</script>
+</head>
+<body onload="initTmap();">
+   <select id="city_do">
+      <option value="창원시" selected="selected">창원시</option>
+   </select>
+   <select id="gu_gun">
+      <option value="의창구" selected="selected">의창구</option>
+      <option value="성산구">성산구</option>
+   </select>
+   <select id="dong">
+      <option value="사림동" selected="selected">사림동</option>
+      <option value="팔용동" selected="selected">팔용동</option>
+      <option value="용호동" selected="selected">용호동</option>
+      <option value="용지동" selected="selected">용지동</option>
+      <option value="중앙동" selected="selected">중앙동</option>
+   </select>
+      <input type="text" class="text_custom" id="bunji" name="bunji"
+         value="1">
+   <button id="btn_select">적용하기</button>
+
+   <select id="selectLevel">
+    <option value="EPSG3857" selected="selected">EPSG3857</option>
+    <option value="KATECH">KATECH</option>
+    <option value="BESSELGEO">BESSELGEO</option>
+    <option value="BESSELTM">BESSELTM</option>
+    <option value="GRS80GEO">GRS80GEO</option>
+    <option value="GRS80TM">GRS80TM</option>
+</select>
+
+
+   <div id="map_div"></div>
+</body>
+</html>
