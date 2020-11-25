@@ -21,7 +21,7 @@
 			function initTmap() {
 				// 1. 지도 띄우기
 				map = new Tmapv2.Map("map_div", {
-					center : new Tmapv2.LatLng(37.49241689559544, 127.03171389453507),
+					center : new Tmapv2.LatLng(35.24468697197129, 128.66676184575024),
 					width : "100%",
 					height : "400px",
 					zoom : 11,
@@ -32,9 +32,9 @@
 				// 2. 시작, 도착 심볼찍기
 				// 시작
 				marker_s = new Tmapv2.Marker(
-						{
-							position : new Tmapv2.LatLng(37.566567545861645,
-									126.9850380932383),
+						{ 
+							position : new Tmapv2.LatLng(35.24581970497107,
+                            128.6491694937542),
 							icon : "http://tmapapis.sktelecom.com/upload/tmap/marker/pin_r_m_s.png",
 							iconSize : new Tmapv2.Size(24, 38),
 							map : map
@@ -43,8 +43,8 @@
 				//도착
 				marker_e = new Tmapv2.Marker(
 						{
-							position : new Tmapv2.LatLng(37.403049076341794,
-									127.10331814639885),
+							position : new Tmapv2.LatLng(35.24578717,
+                            128.69195651),
 							icon : "http://tmapapis.sktelecom.com/upload/tmap/marker/pin_r_m_e.png",
 							iconSize : new Tmapv2.Size(24, 38),
 							map : map
@@ -70,10 +70,10 @@
 												async : false,
 												data : {
 													"appKey" : "l7xx0ce34cc9d1cd4d7aa817782ad053375c",
-													"startX" : "126.9850380932383",
-													"startY" : "37.566567545861645",
-													"endX" : "127.10331814639885",
-													"endY" : "37.403049076341794",
+													"startX" : "128.6491694937542",
+													"startY" : "35.24581970497107",
+													"endX" : "128.69195651",
+													"endY" : "35.24578717",
 													"reqCoordType" : "WGS84GEO",
 													"resCoordType" : "EPSG3857",
 													"searchOption" : searchOption,
@@ -83,7 +83,7 @@
 		
 													var resultData = response.features;
 		
-													var tDistance = "총 거리 : "
+													var tDistance = "창원시 의창구 명서동 주민센터에서 출발하면, 총 거리 : "
 															+ (resultData[0].properties.totalDistance / 1000)
 																	.toFixed(1) + "km,";
 													var tTime = " 총 시간 : "
