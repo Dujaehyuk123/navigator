@@ -1,5 +1,5 @@
 import React, { Component } from "react"
-import firebase from "firebase"
+import firebase from 'firebase';    
 import StyledFirebaseAuth from "react-firebaseui/StyledFirebaseAuth"
 
 firebase.initializeApp({
@@ -34,15 +34,13 @@ class App extends Component {
     return (
       <div className="App">
         {this.state.isSignedIn ? (
-          <span>
+        <span>
             <div>Signed In!</div>
-            <button onClick={() => firebase.auth().signOut()}>Sign out!</button>
+           <button onClick={() => firebase.auth().signOut()}>Sign out!</button>
             <h1>Welcome {firebase.auth().currentUser.displayName}</h1>
-            <img
-              alt="profile picture"
-              src={firebase.auth().currentUser.photoURL}
-            />
-          </span>
+                alt="profile picture"
+                src={firebase.auth().currentUser.photoURL}
+        </span>
         ) : (
           <StyledFirebaseAuth
             uiConfig={this.uiConfig}
